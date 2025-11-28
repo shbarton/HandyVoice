@@ -85,7 +85,9 @@ export type SidebarSection =
   | "postprocessing"
   | "history"
   | "debug"
-  | "about";
+  | "about"
+  | "dictionary"
+  | "settings";
 
 export const SettingsSchema = z.object({
   bindings: ShortcutBindingsMapSchema,

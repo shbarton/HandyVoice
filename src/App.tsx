@@ -3,24 +3,36 @@ import { useEffect, useState } from "react";
 import { Toaster } from "sonner";
 import "./App.css";
 import AccessibilityPermissions from "./components/AccessibilityPermissions";
-import Footer from "./components/footer";
 import Onboarding from "./components/onboarding";
 import { Sidebar, SECTIONS_CONFIG } from "./components/Sidebar";
 import { SidebarSection } from "./lib/types";
-import { Dashboard } from "./components/Dashboard";
 import { useSettings } from "./hooks/useSettings";
 
-const renderSettingsContent = (
+const renderContent = (
   section: SidebarSection,
   onSectionChange: (section: SidebarSection) => void,
 ) => {
+  const config = SECTIONS_CONFIG[section];
+
+  // Fallback if config is missing (shouldn't happen if types are correct)
+  if (!config) return null;
+
+  const Component = config.component;
+
+  // Dashboard handles its own layout
   if (section === "dashboard") {
-    return <Dashboard onNavigate={onSectionChange} />;
+    return <Component onNavigate={onSectionChange} />;
   }
 
-  const ActiveComponent =
-    SECTIONS_CONFIG[section]?.component || SECTIONS_CONFIG.general.component;
-  return <ActiveComponent />;
+  // Settings sections
+  return (
+    <div className="p-10">
+      <h1 className="text-3xl font-serif font-medium text-primary mb-6">
+        {config.label}
+      </h1>
+      <Component />
+    </div>
+  );
 };
 
 function App() {
@@ -79,26 +91,16 @@ function App() {
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex bg-background text-foreground font-sans">
       <Toaster />
-      {/* Main content area that takes remaining space */}
-      <div className="flex-1 flex overflow-hidden">
-        <Sidebar
-          activeSection={currentSection}
-          onSectionChange={setCurrentSection}
-        />
-        {/* Scrollable content area */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="flex-1 overflow-y-auto">
-            <div className="flex flex-col items-center p-4 gap-4">
-              <AccessibilityPermissions />
-              {renderSettingsContent(currentSection, setCurrentSection)}
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Fixed footer at bottom */}
-      <Footer />
+      <Sidebar
+        activeSection={currentSection}
+        onSectionChange={setCurrentSection}
+      />
+      <main className="flex-1 overflow-y-auto">
+        <AccessibilityPermissions />
+        {renderContent(currentSection, setCurrentSection)}
+      </main>
     </div>
   );
 }

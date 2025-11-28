@@ -1,71 +1,122 @@
 @import "tailwindcss";
 
-@theme {
-  --color-text: #0f0f0f;
-  --color-background: #fbfbfb;
-  --color-background-ui: #da5893;
-  --color-logo-primary: #faa2ca;
-  --color-logo-stroke: #382731;
-  --color-text-stroke: #f6f6f6;
-  --color-mid-gray: #808080;
-}
-
-:root {
-  /* Typography */
-  font-size: 15px;
-  line-height: 24px;
-  font-weight: 400;
-
-  /* Colors - Light Theme */
-  /* --color-text: #0f0f0f;
-  --color-background: #fbfbfb;
-  --color-logo-primary: #FAA2CA;
-  --color-logo-stroke: #382731;
-  --color-text-stroke: #f6f6f6; */
-
-  /* Typography settings */
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
-
-  /* Apply colors */
-  color: var(--color-text);
-  background-color: var(--color-background);
-}
-
-.container {
-  margin: 0;
-  padding-top: 10vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    /* Colors - Dark Theme */
-    --color-text: #fbfbfb;
-    --color-background: #2c2b29;
-    --color-logo-primary: #f28cbb;
-    --color-logo-stroke: #fad1ed;
+    /* Theme: Architectural Paper */
+    /* A warm, tactile foundation */
+    --background: #f2f0e9;
+
+    /* Deep, rich ink for text - softer than black */
+    --foreground: #2a2826;
+
+    /* Clean white sheets for content areas */
+    --card: #ffffff;
+    --card-foreground: #2a2826;
+
+    --popover: #ffffff;
+    --popover-foreground: #2a2826;
+
+    /* Primary: A deep, sophisticated Navy/Charcoal for strong branding */
+    --primary: #1c2333;
+    --primary-foreground: #ffffff;
+
+    /* Secondary: Subtle warm grey */
+    --secondary: #e6e4dd;
+    --secondary-foreground: #2a2826;
+
+    /* Muted: For supporting text */
+    --muted: #e6e4dd;
+    --muted-foreground: #85817c;
+
+    /* Accent: A vibrant, surprising "International Orange" for actions */
+    --accent: #ff4f00;
+    --accent-foreground: #ffffff;
+
+    /* Destructive */
+    --destructive: #d93025;
+    --destructive-foreground: #ffffff;
+
+    --border: #e6e4dd;
+    --input: #e6e4dd;
+    --ring: #1c2333;
+
+    --radius: 1rem;
   }
-}
 
-@layer utilities {
-  .text-stroke {
-    -webkit-text-stroke: 2px var(--color-text-stroke);
+  * {
+    border-color: var(--border);
   }
-}
 
-.logo-primary {
-  fill: var(--color-logo-primary);
-}
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: "Manrope", sans-serif; /* Clean, geometric, legible */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-image: radial-gradient(#85817c 0.5px, transparent 0.5px);
+    background-size: 24px 24px; /* Subtle texture */
+  }
 
-.logo-stroke {
-  fill: var(--color-logo-stroke);
-  stroke: var(--color-logo-stroke);
-  stroke-width: 1;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Fraunces", serif; /* Distinctive, soft, characterful */
+    font-variation-settings:
+      "SOFT" 50,
+      "WONK" 0;
+  }
+
+  .material-symbols-outlined {
+    font-family: "Material Symbols Outlined";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    font-variation-settings:
+      "FILL" 0,
+      "wght" 300,
+      "GRAD" 0,
+      "opsz" 24; /* Thinner weight for elegance */
+  }
+
+  /* Animations */
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.98);
+      filter: blur(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+
+  .animate-reveal {
+    animation: reveal 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    opacity: 0; /* Start hidden */
+  }
+
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+  .delay-400 {
+    animation-delay: 400ms;
+  }
 }
