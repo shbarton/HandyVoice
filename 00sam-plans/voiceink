@@ -1,0 +1,19 @@
+VoiceInk reference: https://tryvoiceink.com/
+
+What VoiceInk has that Handy does not
+- Power Mode: per-app/URL presets applied automatically.
+- Context-aware transcription: inspects screen/selection to adapt output.
+- Smart Modes: quick switches for style/behavior presets (AI-powered).
+- AI Assistant mode: conversational assistant separate from plain transcription.
+- Personal dictionary with smart replacements/training flow (Handy only has simple custom words).
+
+Cross-platform considerations (mac + Windows)
+- Per-app presets: mac uses NSWorkspace; Windows needs foreground window/process detection (WinAPI); design a shared manager interface with platform backends and a no-op fallback on unsupported envs.
+- Context awareness: mac likely uses Accessibility APIs/SelectedTextKit; Windows would need UI Automation to read selection/active window text; treat as optional capability, with graceful degradation when permissions or APIs unavailable.
+- Assistant/Smart Modes: can be UI/logic only; reuse existing post-processing/LLM plumbing to avoid platform dependency.
+- Dictionary/replacements: already partly covered via Handy custom words; extend to phrase-level replacements with shared Rust logic; no platform constraints.
+
+Suggested path forward
+- Start with platform-agnostic pieces: Smart Modes as named prompt/preset sets; Assistant mode that reuses LLM client; richer dictionary UI + phrase replacements.
+- Add per-app presets next: build a cross-platform “active app” service (mac via NSWorkspace, Windows via WinAPI); gate feature behind capability checks.
+- Investigate context-aware text: prototype mac first (accessibility), plan Windows via UIA; ensure opt-in permissions and safe fallbacks.

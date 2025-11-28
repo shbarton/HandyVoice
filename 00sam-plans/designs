@@ -1,0 +1,202 @@
+## Code for the elegance and blue designs from stitch https://stitch.withgoogle.com/projects/5767708459012748261
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SpeechNote Pro Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<style type="text/tailwindcss">
+    @layer theme {
+      :root {
+        --background: #F9F8F6;
+        --foreground: #1C1C1E;
+        --card: #FFFFFF;
+        --card-foreground: #1C1C1E;
+        --popover: #FFFFFF;
+        --popover-foreground: #1C1C1E;
+        --primary: #192A4F;
+        --primary-foreground: #FFFFFF;
+        --secondary: #F3F4F6;
+        --secondary-foreground: #1C1C1E;
+        --muted: #F3F4F6;
+        --muted-foreground: #6B7280;
+        --accent: #F3F4F6;
+        --accent-foreground: #1C1C1E;
+        --destructive: #F87171;
+        --destructive-foreground: #FFFFFF;
+        --border: #E5E7EB;
+        --input: #E5E7EB;
+        --ring: #192A4F;
+      }
+    }
+  </style>
+<script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              background: 'var(--background)',
+              foreground: 'var(--foreground)',
+              primary: {
+                DEFAULT: 'var(--primary)',
+                foreground: 'var(--primary-foreground)'
+              },
+              secondary: {
+                DEFAULT: 'var(--secondary)',
+                foreground: 'var(--secondary-foreground)'
+              },
+              muted: {
+                DEFAULT: 'var(--muted)',
+                foreground: 'var(--muted-foreground)'
+              },
+              accent: {
+                DEFAULT: 'var(--accent)',
+                foreground: 'var(--accent-foreground)'
+              },
+              destructive: {
+                DEFAULT: 'var(--destructive)',
+                foreground: 'var(--destructive-foreground)'
+              },
+              border: 'var(--border)',
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              serif: ["Lora", "serif"],
+            },
+            borderRadius: {
+              lg: "0.75rem", // Increased from 0.5rem
+              md: "calc(0.75rem - 2px)",
+              sm: "calc(0.75rem - 4px)"
+            },
+            boxShadow: {
+              'soft': '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
+            }
+          },
+        },
+      };
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-sans bg-background text-foreground antialiased">
+<div class="flex h-screen">
+<aside class="w-64 flex-shrink-0 border-r border-border bg-card flex flex-col p-6">
+<div class="flex items-center gap-3 px-2 py-2">
+<div class="bg-primary text-primary-foreground w-8 h-8 flex items-center justify-center rounded-md font-bold text-lg font-serif">S</div>
+<span class="text-lg font-semibold font-serif text-primary">SpeechNote</span>
+</div>
+<nav class="mt-8 flex-grow">
+<ul class="space-y-2">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md bg-primary/10 text-primary font-medium" href="#">
+<span class="material-symbols-outlined text-2xl">dashboard</span>
+<span>Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">history</span>
+<span>History</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">book</span>
+<span>Dictionary</span>
+</a>
+</li>
+<li>
+<a class="flex items-center justify-between gap-3 px-3 py-2 rounded-md text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-2xl">settings</span>
+<span>Settings</span>
+</div>
+</a>
+</li>
+</ul>
+</nav>
+<div class="flex flex-col gap-4">
+<div class="bg-secondary/50 border border-border p-4 rounded-lg shadow-soft text-center">
+<p class="font-medium text-foreground text-sm">Your trial has ended.</p>
+<p class="text-sm text-muted-foreground mt-1">Upgrade to continue transcribing.</p>
+<button class="mt-4 w-full bg-primary text-primary-foreground text-sm font-semibold py-2 rounded-md hover:bg-primary/90 transition-colors">Upgrade Plan</button>
+</div>
+<div class="border-t border-border pt-4">
+<a class="flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm" href="#">
+<span class="material-symbols-outlined text-base">logout</span>
+<span>Sign Out</span>
+</a>
+</div>
+</div>
+</aside>
+<main class="flex-1 overflow-y-auto p-10">
+<header class="flex justify-between items-center">
+<div>
+<h1 class="text-4xl font-serif font-medium text-primary">Welcome back, Sam!</h1>
+<p class="text-muted-foreground mt-2 opacity-80">Here is your transcription overview for today.</p>
+</div>
+<div class="flex items-center gap-4 text-sm font-medium">
+<div class="flex items-center gap-2 text-muted-foreground">
+<span class="material-symbols-outlined text-xl">schedule</span>
+<span>0</span>
+</div>
+<span class="bg-card border border-border text-foreground px-3 py-1.5 rounded-md">186 credits remaining</span>
+</div>
+</header>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+<div class="bg-card p-6 rounded-lg border border-border shadow-soft">
+<p class="text-sm text-muted-foreground">Total Transcriptions</p>
+<p class="text-4xl font-serif mt-3 text-primary">13</p>
+</div>
+<div class="bg-card p-6 rounded-lg border border-border shadow-soft">
+<p class="text-sm text-muted-foreground">Hours Transcribed</p>
+<p class="text-4xl font-serif mt-3 text-primary">&lt; 1</p>
+</div>
+<div class="bg-card p-6 rounded-lg border border-border shadow-soft">
+<p class="text-sm text-muted-foreground">This Week</p>
+<p class="text-4xl font-serif mt-3 text-primary">3</p>
+</div>
+</div>
+<div class="mt-16">
+<h2 class="text-sm font-medium text-muted-foreground uppercase tracking-wider">Recent Transcriptions</h2>
+<div class="mt-4 flow-root">
+<ul class="-my-5">
+<li class="flex items-center justify-between py-5 border-b border-gray-200/60">
+<p class="text-foreground truncate pr-8">Okay. So I'm recording. Let's see how well this does.</p>
+<p class="text-sm text-muted-foreground opacity-60 flex-shrink-0">Nov 13, 2025</p>
+</li>
+<li class="flex items-center justify-between py-5 border-b border-gray-200/60">
+<p class="text-foreground truncate pr-8">I want you to help me fix a few things. One is that it doesn't let me single key as a keyboard shortcut.</p>
+<p class="text-sm text-muted-foreground opacity-60 flex-shrink-0">Nov 13, 2025</p>
+</li>
+<li class="flex items-center justify-between py-5 border-b border-gray-200/60">
+<p class="text-foreground truncate pr-8">Okay. Nice. So let me just put this here. Okay. So it's oh, okay. I'll do it here.</p>
+<p class="text-sm text-muted-foreground opacity-60 flex-shrink-0">Nov 7, 2025</p>
+</li>
+<li class="flex items-center justify-between py-5 border-b border-gray-200/60">
+<p class="text-foreground truncate pr-8">It just wants to know if it can control, my clipboard or something. So if I I'm testing it out now down here. So I'm gonna</p>
+<p class="text-sm text-muted-foreground opacity-60 flex-shrink-0">Nov 7, 2025</p>
+</li>
+<li class="flex items-center justify-between py-5 border-b border-gray-200/60">
+<p class="text-foreground truncate pr-8">So I'm testing this out. Let's see how this</p>
+<p class="text-sm text-muted-foreground opacity-60 flex-shrink-0">Nov 7, 2025</p>
+</li>
+</ul>
+</div>
+<div class="mt-6">
+<a class="group text-sm font-medium text-primary inline-flex items-center gap-2 py-2" href="#">
+<span>View all transcriptions</span>
+<span class="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_right_alt</span>
+</a>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

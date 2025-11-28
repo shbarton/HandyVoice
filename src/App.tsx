@@ -5,10 +5,19 @@ import "./App.css";
 import AccessibilityPermissions from "./components/AccessibilityPermissions";
 import Footer from "./components/footer";
 import Onboarding from "./components/onboarding";
-import { Sidebar, SidebarSection, SECTIONS_CONFIG } from "./components/Sidebar";
+import { Sidebar, SECTIONS_CONFIG } from "./components/Sidebar";
+import { SidebarSection } from "./lib/types";
+import { Dashboard } from "./components/Dashboard";
 import { useSettings } from "./hooks/useSettings";
 
-const renderSettingsContent = (section: SidebarSection) => {
+const renderSettingsContent = (
+  section: SidebarSection,
+  onSectionChange: (section: SidebarSection) => void,
+) => {
+  if (section === "dashboard") {
+    return <Dashboard onNavigate={onSectionChange} />;
+  }
+
   const ActiveComponent =
     SECTIONS_CONFIG[section]?.component || SECTIONS_CONFIG.general.component;
   return <ActiveComponent />;
@@ -17,7 +26,7 @@ const renderSettingsContent = (section: SidebarSection) => {
 function App() {
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
   const [currentSection, setCurrentSection] =
-    useState<SidebarSection>("general");
+    useState<SidebarSection>("dashboard");
   const { settings, updateSetting } = useSettings();
 
   useEffect(() => {
@@ -83,7 +92,7 @@ function App() {
           <div className="flex-1 overflow-y-auto">
             <div className="flex flex-col items-center p-4 gap-4">
               <AccessibilityPermissions />
-              {renderSettingsContent(currentSection)}
+              {renderSettingsContent(currentSection, setCurrentSection)}
             </div>
           </div>
         </div>

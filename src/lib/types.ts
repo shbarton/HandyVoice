@@ -78,6 +78,14 @@ export const PostProcessProviderSchema = z.object({
 });
 
 export type PostProcessProvider = z.infer<typeof PostProcessProviderSchema>;
+export type SidebarSection =
+  | "dashboard"
+  | "general"
+  | "advanced"
+  | "postprocessing"
+  | "history"
+  | "debug"
+  | "about";
 
 export const SettingsSchema = z.object({
   bindings: ShortcutBindingsMapSchema,
@@ -149,3 +157,14 @@ export const ModelInfoSchema = z.object({
 });
 
 export type ModelInfo = z.infer<typeof ModelInfoSchema>;
+
+export interface HistoryEntry {
+  id: number;
+  file_name: string;
+  timestamp: number;
+  saved: boolean;
+  title: string;
+  transcription_text: string;
+  post_processed_text?: string | null;
+  post_process_prompt?: string | null;
+}

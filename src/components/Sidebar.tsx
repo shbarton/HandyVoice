@@ -1,8 +1,17 @@
 import React from "react";
-import { Cog, FlaskConical, History, Info, Sparkles } from "lucide-react";
+import {
+  Cog,
+  FlaskConical,
+  History,
+  Info,
+  LayoutDashboard,
+  Sparkles,
+} from "lucide-react";
 import HandyTextLogo from "./icons/HandyTextLogo";
 import HandyHand from "./icons/HandyHand";
 import { useSettings } from "../hooks/useSettings";
+import { Dashboard } from "./Dashboard";
+import { SidebarSection } from "../lib/types";
 import {
   GeneralSettings,
   AdvancedSettings,
@@ -11,8 +20,6 @@ import {
   AboutSettings,
   PostProcessingSettings,
 } from "./settings";
-
-export type SidebarSection = keyof typeof SECTIONS_CONFIG;
 
 interface IconProps {
   width?: number | string;
@@ -30,6 +37,12 @@ interface SectionConfig {
 }
 
 export const SECTIONS_CONFIG = {
+  dashboard: {
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    component: Dashboard,
+    enabled: () => true,
+  },
   general: {
     label: "General",
     icon: HandyHand,
@@ -66,7 +79,7 @@ export const SECTIONS_CONFIG = {
     component: AboutSettings,
     enabled: () => true,
   },
-} as const satisfies Record<string, SectionConfig>;
+} as const satisfies Record<SidebarSection, SectionConfig>;
 
 interface SidebarProps {
   activeSection: SidebarSection;

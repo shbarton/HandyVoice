@@ -4,15 +4,7 @@ import { Button } from "../../ui/Button";
 import { Copy, Star, Check, Trash2, FolderOpen } from "lucide-react";
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-
-interface HistoryEntry {
-  id: number;
-  file_name: string;
-  timestamp: number;
-  saved: boolean;
-  title: string;
-  transcription_text: string;
-}
+import { HistoryEntry } from "../../../lib/types";
 
 interface OpenRecordingsButtonProps {
   onClick: () => void;
