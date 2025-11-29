@@ -41,6 +41,8 @@ interface UseSettingsReturn {
   ) => Promise<void>;
   updatePostProcessModel: (providerId: string, model: string) => Promise<void>;
   fetchPostProcessModels: (providerId: string) => Promise<string[]>;
+  validateDeepgramKey: (apiKey: string) => Promise<void>;
+  setSecureKeyStorage: (enabled: boolean) => Promise<void>;
 }
 
 export const useSettings = (): UseSettingsReturn => {
@@ -74,5 +76,8 @@ export const useSettings = (): UseSettingsReturn => {
     updatePostProcessApiKey: store.updatePostProcessApiKey,
     updatePostProcessModel: store.updatePostProcessModel,
     fetchPostProcessModels: store.fetchPostProcessModels,
+    validateDeepgramKey: store.validateDeepgramKey,
+    setSecureKeyStorage: (enabled: boolean) =>
+      store.updateSetting("use_secure_key_storage", enabled as any),
   };
 };

@@ -34,7 +34,7 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
       tooltipPosition={tooltipPosition}
     >
       <label
-        className={`inline-flex items-center ${disabled || isUpdating ? "cursor-not-allowed" : "cursor-pointer"}`}
+        className={`inline-flex items-center ${disabled || isUpdating ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
       >
         <input
           type="checkbox"
@@ -44,11 +44,24 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
           disabled={disabled || isUpdating}
           onChange={(e) => onChange(e.target.checked)}
         />
-        <div className="relative w-11 h-6 bg-mid-gray/20 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-logo-primary rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-background-ui peer-disabled:opacity-50"></div>
+        <div
+          className={`
+            relative w-11 h-6 rounded-full
+            bg-secondary border border-border/60
+            peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/20 peer-focus:ring-offset-1
+            peer-checked:bg-primary peer-checked:border-primary
+            after:content-[''] after:absolute after:top-[3px] after:start-[3px]
+            after:bg-card after:rounded-full after:h-[18px] after:w-[18px]
+            after:shadow-[0_1px_3px_rgba(0,0,0,0.1)]
+            after:transition-all after:duration-200 after:ease-out
+            peer-checked:after:translate-x-5 peer-checked:after:bg-white
+            transition-all duration-200 ease-out
+          `}
+        />
       </label>
       {isUpdating && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-4 h-4 border-2 border-logo-primary border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}
     </SettingContainer>

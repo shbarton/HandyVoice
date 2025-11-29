@@ -151,6 +151,33 @@ impl SoundTheme {
     }
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum TranscriptionProvider {
+    Local,
+    Deepgram,
+    Openai,
+}
+
+impl Default for TranscriptionProvider {
+    fn default() -> Self {
+        TranscriptionProvider::Local
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum UsageMode {
+    OwnKeys,
+    Credits,
+}
+
+impl Default for UsageMode {
+    fn default() -> Self {
+        UsageMode::OwnKeys
+    }
+}
+
 /* still handy for composing the initial JSON in the store ------------- */
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AppSettings {
@@ -167,6 +194,30 @@ pub struct AppSettings {
     pub autostart_enabled: bool,
     #[serde(default = "default_model")]
     pub selected_model: String,
+    #[serde(default = "default_provider")]
+    pub provider: TranscriptionProvider,
+    #[serde(default = "default_deepgram_model")]
+    pub deepgram_model: String,
+    #[serde(default = "default_use_secure_storage")]
+    pub use_secure_key_storage: bool,
+    #[serde(default)]
+    pub api_base_url: Option<String>,
+    #[serde(default)]
+    pub deepgram_api_key_preview: String,
+    #[serde(default)]
+    pub openai_api_key_preview: String,
+    #[serde(default)]
+    pub deepgram_api_key: Option<String>,
+    #[serde(default)]
+    pub openai_api_key: Option<String>,
+    #[serde(default)]
+    pub auth_token: Option<String>,
+    #[serde(default)]
+    pub user_id: Option<String>,
+    #[serde(default)]
+    pub minutes_remaining: Option<u32>,
+    #[serde(default = "default_usage_mode")]
+    pub usage_mode: UsageMode,
     #[serde(default = "default_always_on_microphone")]
     pub always_on_microphone: bool,
     #[serde(default)]
@@ -219,6 +270,18 @@ pub struct AppSettings {
 
 fn default_model() -> String {
     "".to_string()
+}
+
+fn default_provider() -> TranscriptionProvider {
+    TranscriptionProvider::Local
+}
+
+fn default_deepgram_model() -> String {
+    "nova-3".to_string()
+}
+
+fn default_use_secure_storage() -> bool {
+    true
 }
 
 fn default_always_on_microphone() -> bool {
@@ -278,6 +341,10 @@ fn default_sound_theme() -> SoundTheme {
 
 fn default_post_process_enabled() -> bool {
     false
+}
+
+fn default_usage_mode() -> UsageMode {
+    UsageMode::OwnKeys
 }
 
 fn default_post_process_provider_id() -> String {
@@ -374,6 +441,18 @@ pub fn get_default_settings() -> AppSettings {
         start_hidden: default_start_hidden(),
         autostart_enabled: default_autostart_enabled(),
         selected_model: "".to_string(),
+        provider: default_provider(),
+        deepgram_model: default_deepgram_model(),
+        use_secure_key_storage: default_use_secure_storage(),
+        api_base_url: None,
+        deepgram_api_key_preview: String::new(),
+        openai_api_key_preview: String::new(),
+        deepgram_api_key: None,
+        openai_api_key: None,
+        auth_token: None,
+        user_id: None,
+        minutes_remaining: None,
+        usage_mode: default_usage_mode(),
         always_on_microphone: false,
         selected_microphone: None,
         clamshell_microphone: None,

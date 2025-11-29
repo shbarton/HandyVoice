@@ -28,6 +28,7 @@ interface SettingsStore {
   isUpdatingKey: (key: string) => boolean;
   playTestSound: (soundType: "start" | "stop") => Promise<void>;
   checkCustomSounds: () => Promise<void>;
+  validateDeepgramKey: (apiKey: string) => Promise<void>;
   setPostProcessProvider: (providerId: string) => Promise<void>;
   updatePostProcessSetting: (
     settingType: "base_url" | "api_key" | "model",
@@ -58,6 +59,18 @@ interface SettingsStore {
 // Note: Default post-processing settings are now managed in Rust
 // Settings will always have providers after migration
 const DEFAULT_SETTINGS: Partial<Settings> = {
+  provider: "local",
+  api_base_url: null,
+  deepgram_api_key_preview: "",
+  deepgram_api_key: "",
+  openai_api_key_preview: "",
+  openai_api_key: "",
+  auth_token: null,
+  user_id: null,
+  minutes_remaining: null,
+  usage_mode: "own_keys",
+  deepgram_model: "nova-3",
+  use_secure_key_storage: true,
   always_on_microphone: false,
   audio_feedback: true,
   audio_feedback_volume: 1.0,
@@ -113,6 +126,15 @@ const settingUpdaters: {
     invoke("set_selected_output_device", {
       deviceName: value === "Default" ? "default" : value,
     }),
+  provider: (value) =>
+    invoke("change_transcription_provider", { provider: value }),
+  deepgram_model: (value) =>
+    invoke("change_deepgram_model", { model: value }),
+  use_secure_key_storage: (value) =>
+    invoke("set_secure_key_storage", { enabled: value }),
+  usage_mode: (value) => invoke("set_usage_mode", { mode: value }),
+  api_base_url: (value) =>
+    invoke("set_api_base_url", { apiBaseUrl: value ?? "" }),
   recording_retention_period: (value) =>
     invoke("update_recording_retention_period", { period: value }),
   translate_to_english: (value) =>
@@ -160,6 +182,21 @@ export const useSettingsStore = create<SettingsStore>()(
     setAudioDevices: (audioDevices) => set({ audioDevices }),
     setOutputDevices: (outputDevices) => set({ outputDevices }),
     setCustomSounds: (customSounds) => set({ customSounds }),
+    validateDeepgramKey: async (apiKey) => {
+      const { refreshSettings, setUpdating } = get();
+      const updateKey = "deepgram_api_key_preview";
+
+      setUpdating(updateKey, true);
+      try {
+        await invoke("validate_and_store_deepgram_key", { apiKey });
+        await refreshSettings();
+      } catch (error) {
+        console.error("Failed to validate Deepgram key:", error);
+        throw error;
+      } finally {
+        setUpdating(updateKey, false);
+      }
+    },
 
     // Getters
     getSetting: (key) => get().settings?.[key],
@@ -173,7 +210,11 @@ export const useSettingsStore = create<SettingsStore>()(
           defaults: DEFAULT_SETTINGS,
           autoSave: false,
         });
-        const settings = (await store.get("settings")) as Settings;
+        const storedSettings = (await store.get("settings")) as Settings;
+        const settings = {
+          ...DEFAULT_SETTINGS,
+          ...storedSettings,
+        } as Settings;
 
         // Load additional settings that come from invoke calls
         const [

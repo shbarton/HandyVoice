@@ -7,8 +7,10 @@ use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutState};
 use crate::actions::ACTION_MAP;
 use crate::settings::ShortcutBinding;
 use crate::settings::{
-    self, get_settings, ClipboardHandling, LLMPrompt, OverlayPosition, PasteMethod, SoundTheme,
+    self, get_settings, ClipboardHandling, LLMPrompt, OverlayPosition, PasteMethod,
+    SoundTheme, TranscriptionProvider, UsageMode,
 };
+use crate::secure_store;
 use crate::ManagedToggleState;
 
 pub fn init_shortcuts(app: &AppHandle) {
@@ -242,6 +244,173 @@ pub fn change_autostart_setting(app: AppHandle, enabled: bool) -> Result<(), Str
     );
 
     Ok(())
+}
+
+#[tauri::command]
+pub fn change_transcription_provider(app: AppHandle, provider: String) -> Result<(), String> {
+    let mut settings = settings::get_settings(&app);
+    let parsed = match provider.as_str() {
+        "local" => TranscriptionProvider::Local,
+        "deepgram" => TranscriptionProvider::Deepgram,
+        "openai" => TranscriptionProvider::Openai,
+        other => {
+            warn!(
+                "Unknown provider '{}', defaulting to local transcription.",
+                other
+            );
+            TranscriptionProvider::Local
+        }
+    };
+
+    settings.provider = parsed;
+    settings::write_settings(&app, settings);
+    Ok(())
+}
+
+#[tauri::command]
+pub fn change_deepgram_model(app: AppHandle, model: String) -> Result<(), String> {
+    let mut settings = settings::get_settings(&app);
+    settings.deepgram_model = model;
+    settings::write_settings(&app, settings);
+    Ok(())
+}
+
+#[tauri::command]
+pub fn set_secure_key_storage(app: AppHandle, enabled: bool) -> Result<(), String> {
+    let mut settings = settings::get_settings(&app);
+    settings.use_secure_key_storage = enabled;
+
+    // If switching to secure storage, clear plaintext copy.
+    if enabled {
+        settings.deepgram_api_key = None;
+    }
+
+    settings::write_settings(&app, settings);
+    Ok(())
+}
+
+#[tauri::command]
+pub fn set_usage_mode(app: AppHandle, mode: String) -> Result<(), String> {
+    let mut settings = settings::get_settings(&app);
+    let parsed = match mode.as_str() {
+        "own_keys" => UsageMode::OwnKeys,
+        "credits" => UsageMode::Credits,
+        other => {
+            warn!("Unknown usage mode '{}', defaulting to own_keys.", other);
+            UsageMode::OwnKeys
+        }
+    };
+
+    settings.usage_mode = parsed;
+    settings::write_settings(&app, settings);
+    Ok(())
+}
+
+#[tauri::command]
+pub fn set_api_base_url(app: AppHandle, api_base_url: String) -> Result<(), String> {
+    let mut settings = settings::get_settings(&app);
+    let trimmed = api_base_url.trim();
+    if trimmed.is_empty() {
+        settings.api_base_url = None;
+    } else {
+        settings.api_base_url = Some(trimmed.to_string());
+    }
+    settings::write_settings(&app, settings);
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn validate_and_store_deepgram_key(
+    app: AppHandle,
+    api_key: String,
+) -> Result<String, String> {
+    let mut settings = settings::get_settings(&app);
+    let trimmed = api_key.trim();
+    if trimmed.is_empty() {
+        return Err("API key cannot be empty".to_string());
+    }
+
+    let base_url = settings
+        .api_base_url
+        .clone()
+        .unwrap_or_default()
+        .trim_end_matches('/')
+        .to_string();
+
+    let validation_result = if base_url.is_empty() {
+        // Validate directly against Deepgram API
+        let client = reqwest::Client::new();
+        let response = client
+            .get("https://api.deepgram.com/v1/projects")
+            .header("Authorization", format!("Token {}", trimmed))
+            .send()
+            .await
+            .map_err(|e| format!("Validation request failed: {}", e))?;
+
+        let status = response.status();
+        let body = response
+            .text()
+            .await
+            .map_err(|e| format!("Failed to read validation response: {}", e))?;
+
+        if status.is_success() {
+            Ok(())
+        } else {
+            Err(format!(
+                "Deepgram key validation failed ({}): {}",
+                status, body
+            ))
+        }
+    } else {
+        let endpoint = format!("{}/api/validate/deepgram", base_url);
+        let client = reqwest::Client::new();
+        let response = client
+            .post(endpoint)
+            .json(&serde_json::json!({ "apiKey": trimmed }))
+            .send()
+            .await
+            .map_err(|e| format!("Validation request failed: {}", e))?;
+
+        let status = response.status();
+        let parsed: serde_json::Value = response
+            .json()
+            .await
+            .map_err(|e| format!("Failed to parse validation response: {}", e))?;
+
+        let is_valid = parsed
+            .get("valid")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false);
+
+        if !status.is_success() || !is_valid {
+            let message = parsed
+                .get("message")
+                .and_then(|m| m.as_str())
+                .unwrap_or("Deepgram key validation failed");
+            Err(message.to_string())
+        } else {
+            Ok(())
+        }
+    };
+
+    if let Err(e) = validation_result {
+        return Err(e);
+    }
+
+    let preview: String = trimmed.chars().take(6).collect();
+    settings.deepgram_api_key_preview = format!("{}***", preview);
+
+    if settings.use_secure_key_storage {
+        if let Err(e) = secure_store::store_api_key("deepgram", trimmed) {
+            warn!("Failed to store Deepgram key in keyring: {}", e);
+        }
+        settings.deepgram_api_key = None;
+    } else {
+        settings.deepgram_api_key = Some(trimmed.to_string());
+    }
+    settings::write_settings(&app, settings);
+
+    Ok(preview)
 }
 
 #[tauri::command]

@@ -43,6 +43,16 @@ export const ClipboardHandlingSchema = z.enum([
 ]);
 export type ClipboardHandling = z.infer<typeof ClipboardHandlingSchema>;
 
+export const TranscriptionProviderSchema = z.enum([
+  "local",
+  "deepgram",
+  "openai",
+]);
+export type TranscriptionProvider = z.infer<typeof TranscriptionProviderSchema>;
+
+export const UsageModeSchema = z.enum(["own_keys", "credits"]);
+export type UsageMode = z.infer<typeof UsageModeSchema>;
+
 export const LogLevelSchema = z.number().int().min(1).max(5).default(2);
 export type LogLevelValue = z.infer<typeof LogLevelSchema>;
 
@@ -101,6 +111,18 @@ export const SettingsSchema = z.object({
   start_hidden: z.boolean().optional().default(false),
   autostart_enabled: z.boolean().optional().default(false),
   selected_model: z.string(),
+  provider: TranscriptionProviderSchema.optional().default("local"),
+  deepgram_model: z.string().optional().default("nova-3"),
+  use_secure_key_storage: z.boolean().optional().default(true),
+  api_base_url: z.string().nullable().optional(),
+  deepgram_api_key_preview: z.string().optional().default(""),
+  deepgram_api_key: z.string().optional().default(""),
+  openai_api_key_preview: z.string().optional().default(""),
+  openai_api_key: z.string().optional().default(""),
+  auth_token: z.string().nullable().optional(),
+  user_id: z.string().nullable().optional(),
+  minutes_remaining: z.number().nullable().optional(),
+  usage_mode: UsageModeSchema.optional().default("own_keys"),
   always_on_microphone: z.boolean(),
   selected_microphone: z.string().nullable().optional(),
   clamshell_microphone: z.string().nullable().optional(),
@@ -142,6 +164,8 @@ export type BindingResponse = z.infer<typeof BindingResponseSchema>;
 export type ShortcutBinding = z.infer<typeof ShortcutBindingSchema>;
 export type ShortcutBindingsMap = z.infer<typeof ShortcutBindingsMapSchema>;
 export type Settings = z.infer<typeof SettingsSchema>;
+export type UsageModeValue = z.infer<typeof UsageModeSchema>;
+export type ProviderValue = z.infer<typeof TranscriptionProviderSchema>;
 
 export const ModelInfoSchema = z.object({
   id: z.string(),

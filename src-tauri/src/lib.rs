@@ -7,6 +7,7 @@ mod helpers;
 mod llm_client;
 mod managers;
 mod overlay;
+mod secure_store;
 mod settings;
 mod shortcut;
 mod signal_handle;
@@ -320,6 +321,12 @@ pub fn run() {
             shortcut::change_selected_language_setting,
             shortcut::change_overlay_position_setting,
             shortcut::change_debug_mode_setting,
+            shortcut::change_transcription_provider,
+            shortcut::change_deepgram_model,
+            shortcut::set_secure_key_storage,
+            shortcut::set_usage_mode,
+            shortcut::set_api_base_url,
+            shortcut::validate_and_store_deepgram_key,
             shortcut::change_word_correction_threshold_setting,
             shortcut::change_paste_method_setting,
             shortcut::change_clipboard_handling_setting,
