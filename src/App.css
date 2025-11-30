@@ -53,8 +53,6 @@
     font-family: "Manrope", sans-serif; /* Clean, geometric, legible */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-image: radial-gradient(#85817c 0.5px, transparent 0.5px);
-    background-size: 24px 24px; /* Subtle texture */
   }
 
   h1,
