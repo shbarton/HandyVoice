@@ -6,6 +6,7 @@
   align-items: center;
   padding: 8px 10px;
   background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 9999px;
   opacity: 0;
   transition: opacity 300ms ease-out;

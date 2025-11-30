@@ -13,6 +13,35 @@ const RecordingOverlay: React.FC = () => {
   const smoothedLevelsRef = useRef<number[]>(Array(12).fill(0));
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const errorTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [idleTime, setIdleTime] = useState(0);
+  const idleAnimationRef = useRef<number | null>(null);
+
+  // Animation timer for idle shimmer and processing states
+  useEffect(() => {
+    if ((state !== "recording" && state !== "transcribing") || !isVisible) {
+      if (idleAnimationRef.current) {
+        cancelAnimationFrame(idleAnimationRef.current);
+        idleAnimationRef.current = null;
+      }
+      return;
+    }
+
+    let startTime = performance.now();
+    const animate = (currentTime: number) => {
+      const elapsed = (currentTime - startTime) / 1000; // seconds
+      setIdleTime(elapsed);
+      idleAnimationRef.current = requestAnimationFrame(animate);
+    };
+
+    idleAnimationRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (idleAnimationRef.current) {
+        cancelAnimationFrame(idleAnimationRef.current);
+      }
+    };
+  }, [state, isVisible]);
+
   // Mirror levels so center bars are loudest (like ElevenLabs)
   // Left side: reversed (edge to center), Right side: normal (center to edge)
   const mirroredLevels = useMemo(() => {
@@ -122,8 +151,18 @@ const RecordingOverlay: React.FC = () => {
                 // Use sqrt for more aggressive amplification of low values
                 const boosted = Math.min(1, Math.sqrt(value) * 2.5);
                 const normalized = Math.min(1, Math.pow(boosted, 0.5));
-                // Scale from 0.1 (min) to 1.0 (max)
-                const scale = 0.1 + normalized * 0.9 * centerWeight;
+
+                // Idle shimmer: gentle wave that moves left to right
+                const idleWave =
+                  Math.sin(idleTime * 2 + index * 0.3) * 0.03 +
+                  Math.sin(idleTime * 1.3 - index * 0.2) * 0.02;
+                const idleBase = 0.12 + idleWave;
+
+                // Scale from idle base to 1.0 (max)
+                const scale = Math.max(
+                  idleBase,
+                  idleBase + normalized * (1 - idleBase) * centerWeight,
+                );
                 const opacity = 0.3 + normalized * 0.7;
 
                 return (
@@ -141,7 +180,41 @@ const RecordingOverlay: React.FC = () => {
           </div>
         )}
         {state === "transcribing" && !errorMessage && (
-          <div className="transcribing-text">Transcribing...</div>
+          <div className="waveform-shell">
+            <div className="waveform-bars">
+              {Array(24)
+                .fill(0)
+                .map((_, index) => {
+                  // Distance from center (0 at center, 1 at edges)
+                  const normalizedPosition = (index - 12) / 12;
+                  const centerWeight = 1 - Math.abs(normalizedPosition) * 0.4;
+
+                  // Multiple overlapping waves for organic movement
+                  const wave1 =
+                    Math.sin(idleTime * 1.5 + normalizedPosition * 3) * 0.25;
+                  const wave2 =
+                    Math.sin(idleTime * 0.8 - normalizedPosition * 2) * 0.2;
+                  const wave3 =
+                    Math.cos(idleTime * 2 + normalizedPosition) * 0.15;
+                  const combinedWave = wave1 + wave2 + wave3;
+
+                  const processingValue = (0.25 + combinedWave) * centerWeight;
+                  const scale = Math.max(0.08, Math.min(1, processingValue));
+                  const opacity = 0.4 + scale * 0.5;
+
+                  return (
+                    <span
+                      key={`processing-bar-${index}`}
+                      className="waveform-bar"
+                      style={{
+                        opacity,
+                        transform: `scaleY(${scale})`,
+                      }}
+                    />
+                  );
+                })}
+            </div>
+          </div>
         )}
         {state === "error" && errorMessage && (
           <div className="error-text" title={errorMessage}>
