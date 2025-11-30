@@ -79,9 +79,10 @@ export const Dropdown: React.FC<DropdownProps> = ({
           border border-border rounded-lg min-w-[180px]
           text-left flex items-center justify-between gap-3
           transition-all duration-200 ease-out
-          ${disabled
-            ? "opacity-50 cursor-not-allowed"
-            : "hover:border-primary/40 hover:shadow-[0_2px_8px_rgba(28,35,51,0.08)] cursor-pointer active:scale-[0.98]"
+          ${
+            disabled
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:border-primary/40 hover:shadow-[0_2px_8px_rgba(28,35,51,0.08)] cursor-pointer active:scale-[0.98]"
           }
           ${isOpen && !disabled ? "border-primary/50 shadow-[0_2px_12px_rgba(28,35,51,0.1)]" : ""}
         `}
@@ -90,7 +91,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
         aria-expanded={isOpen}
         aria-haspopup="listbox"
       >
-        <span className={`truncate font-medium ${selectedOption ? "text-foreground" : "text-muted-foreground"}`}>
+        <span
+          className={`truncate font-medium ${selectedOption ? "text-foreground" : "text-muted-foreground"}`}
+        >
           {selectedOption?.label || placeholder}
         </span>
         <svg
@@ -102,7 +105,11 @@ export const Dropdown: React.FC<DropdownProps> = ({
           strokeWidth={2}
           viewBox="0 0 24 24"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M19 9l-7 7-7-7"
+          />
         </svg>
       </button>
 
@@ -111,18 +118,19 @@ export const Dropdown: React.FC<DropdownProps> = ({
         <div
           className={`
             absolute top-full left-0 mt-1.5 min-w-full w-max
-            bg-card border border-border/80 rounded-xl
-            shadow-[0_8px_30px_rgba(28,35,51,0.12),0_2px_8px_rgba(28,35,51,0.06)]
-            z-50 max-h-64 overflow-hidden
+            bg-popover border border-border rounded-xl
+            shadow-[0_10px_38px_-10px_rgba(22,23,24,0.35),0_10px_20px_-15px_rgba(22,23,24,0.2)]
+            z-[100] max-h-64 overflow-hidden
             origin-top
-            ${isClosing
-              ? "animate-[dropdownClose_150ms_ease-out_forwards]"
-              : "animate-[dropdownOpen_200ms_ease-out_forwards]"
+            ${
+              isClosing
+                ? "animate-[dropdownClose_150ms_ease-out_forwards]"
+                : "animate-[dropdownOpen_200ms_ease-out_forwards]"
             }
           `}
           role="listbox"
         >
-          <div className="p-1.5 overflow-y-auto max-h-[calc(16rem-0.75rem)]">
+          <div className="p-1.5 overflow-y-auto max-h-[calc(16rem-0.75rem)] bg-popover">
             {options.length === 0 ? (
               <div className="px-3 py-2.5 text-sm text-muted-foreground text-center italic">
                 No options available
@@ -140,17 +148,21 @@ export const Dropdown: React.FC<DropdownProps> = ({
                       w-full px-3 py-2 text-sm text-left rounded-lg
                       flex items-center justify-between gap-3
                       transition-all duration-150 ease-out
-                      ${isSelected
-                        ? "bg-primary/8 text-primary font-medium"
-                        : "text-foreground hover:bg-secondary/80"
+                      ${
+                        isSelected
+                          ? "bg-primary/8 text-primary font-medium"
+                          : "text-foreground hover:bg-secondary/80"
                       }
-                      ${option.disabled
-                        ? "opacity-40 cursor-not-allowed"
-                        : "cursor-pointer active:bg-secondary"
+                      ${
+                        option.disabled
+                          ? "opacity-40 cursor-not-allowed"
+                          : "cursor-pointer active:bg-secondary"
                       }
                     `}
                     style={{ animationDelay: `${index * 25}ms` }}
-                    onClick={() => !option.disabled && handleSelect(option.value)}
+                    onClick={() =>
+                      !option.disabled && handleSelect(option.value)
+                    }
                     disabled={option.disabled}
                   >
                     <span className="truncate">{option.label}</span>
@@ -162,7 +174,11 @@ export const Dropdown: React.FC<DropdownProps> = ({
                         strokeWidth={2.5}
                         viewBox="0 0 24 24"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
                     )}
                   </button>
