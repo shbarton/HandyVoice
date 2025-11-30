@@ -11,17 +11,19 @@ import { ClipboardHandlingSetting } from "../ClipboardHandling";
 
 export const AdvancedSettings: React.FC = () => {
   return (
-    <div className="max-w-3xl w-full mx-auto space-y-6">
-      <SettingsGroup title="Advanced">
-        <StartHidden descriptionMode="tooltip" grouped={true} />
-        <AutostartToggle descriptionMode="tooltip" grouped={true} />
-        <ShowOverlay descriptionMode="tooltip" grouped={true} />
-        <PasteMethodSetting descriptionMode="tooltip" grouped={true} />
-        <ClipboardHandlingSetting descriptionMode="tooltip" grouped={true} />
-        <TranslateToEnglish descriptionMode="tooltip" grouped={true} />
-        <ModelUnloadTimeoutSetting descriptionMode="tooltip" grouped={true} />
-        <CustomWords descriptionMode="tooltip" grouped />
-      </SettingsGroup>
+    <div className="w-full max-w-4xl space-y-8 pb-12 animate-in fade-in duration-500">
+      <div className="animate-in slide-in-from-bottom-4 duration-500 delay-100 fill-mode-backwards">
+        <SettingsGroup title="Advanced">
+          <StartHidden descriptionMode="inline" grouped={true} />
+          <AutostartToggle descriptionMode="inline" grouped={true} />
+          <ShowOverlay descriptionMode="inline" grouped={true} />
+          <PasteMethodSetting descriptionMode="inline" grouped={true} />
+          <ClipboardHandlingSetting descriptionMode="inline" grouped={true} />
+          <TranslateToEnglish descriptionMode="inline" grouped={true} />
+          <ModelUnloadTimeoutSetting descriptionMode="inline" grouped={true} />
+          <CustomWords descriptionMode="inline" grouped />
+        </SettingsGroup>
+      </div>
     </div>
   );
 };

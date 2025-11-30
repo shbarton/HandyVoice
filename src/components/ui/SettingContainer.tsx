@@ -121,40 +121,31 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
 
   // Horizontal layout (default)
   const horizontalContainerClasses = grouped
-    ? "flex items-center justify-between px-4 py-3"
-    : "flex items-center justify-between px-4 py-3 rounded-xl border border-border/60 bg-card";
+    ? "flex items-start justify-between px-5 py-4 hover:bg-muted/30 transition-colors duration-200"
+    : "flex items-start justify-between px-5 py-4 rounded-2xl border border-border bg-card hover:border-primary/20 transition-all duration-200";
 
   if (descriptionMode === "tooltip") {
     return (
       <div className={horizontalContainerClasses}>
-        <div className="max-w-2/3">
+        <div className="flex-1 mr-4">
           <div className="flex items-center gap-2">
             <h3
-              className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}
+              className={`text-[15px] font-medium text-foreground ${disabled ? "opacity-50" : ""}`}
             >
               {title}
             </h3>
             <div
               ref={tooltipRef}
-              className="relative"
+              className="relative flex items-center"
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
               onClick={toggleTooltip}
             >
               <svg
-                className="w-4 h-4 text-muted-foreground cursor-help hover:text-primary transition-colors duration-200 select-none"
+                className="w-4 h-4 text-muted-foreground/70 cursor-help hover:text-accent transition-colors duration-200"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
-                aria-label="More information"
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    toggleTooltip();
-                  }
-                }}
               >
                 <path
                   strokeLinecap="round"
@@ -165,35 +156,36 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
               </svg>
               {showTooltip && (
                 <div
-                  className={`absolute ${tooltipPosition === "top" ? "bottom-full" : "top-[150%]"} left-1/2 transform -translate-x-1/2 mb-2.5 px-3.5 py-2.5 bg-card border border-border rounded-xl shadow-[0_8px_30px_rgba(28,35,51,0.12)] z-50 max-w-xs min-w-[200px] whitespace-normal animate-in fade-in-0 zoom-in-95 duration-200`}
+                  className={`absolute ${tooltipPosition === "top" ? "bottom-full mb-2" : "top-full mt-2"} left-1/2 -translate-x-1/2 px-3 py-2 bg-popover border border-border rounded-lg shadow-lg z-50 min-w-[240px] max-w-xs animate-in fade-in zoom-in-95 duration-200`}
                 >
-                  <p className="text-sm text-foreground text-center leading-relaxed">
+                  <p className="text-sm text-popover-foreground leading-relaxed">
                     {description}
                   </p>
-                  <div
-                    className={`absolute ${tooltipPosition === "top" ? "top-full" : "bottom-full rotate-180"} left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-border`}
-                  ></div>
                 </div>
               )}
             </div>
           </div>
         </div>
-        <div className="relative">{children}</div>
+        <div className="relative flex-shrink-0 pt-0.5">{children}</div>
       </div>
     );
   }
 
   return (
     <div className={horizontalContainerClasses}>
-      <div className="max-w-2/3">
-        <h3 className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}>
+      <div className="flex-1 mr-8">
+        <h3
+          className={`text-[15px] font-medium text-foreground leading-none mb-1.5 ${disabled ? "opacity-50" : ""}`}
+        >
           {title}
         </h3>
-        <p className={`text-sm ${disabled ? "opacity-50" : ""}`}>
+        <p
+          className={`text-[13px] text-muted-foreground leading-relaxed max-w-lg ${disabled ? "opacity-50" : ""}`}
+        >
           {description}
         </p>
       </div>
-      <div className="relative">{children}</div>
+      <div className="relative flex-shrink-0 pt-0.5">{children}</div>
     </div>
   );
 };

@@ -13,25 +13,33 @@ import { TranscriptionProviderSettings } from "../TranscriptionProviderSettings"
 export const GeneralSettings: React.FC = () => {
   const { audioFeedbackEnabled } = useSettings();
   return (
-    <div className="max-w-3xl w-full mx-auto space-y-6">
-      <SettingsGroup title="Transcription">
-        <TranscriptionProviderSettings grouped />
-      </SettingsGroup>
-      <SettingsGroup title="General">
-        <HandyShortcut descriptionMode="tooltip" grouped={true} />
-        <LanguageSelector descriptionMode="tooltip" grouped={true} />
-        <PushToTalk descriptionMode="tooltip" grouped={true} />
-      </SettingsGroup>
-      <SettingsGroup title="Sound">
-        <MicrophoneSelector descriptionMode="tooltip" grouped={true} />
-        <AudioFeedback descriptionMode="tooltip" grouped={true} />
-        <OutputDeviceSelector
-          descriptionMode="tooltip"
-          grouped={true}
-          disabled={!audioFeedbackEnabled}
-        />
-        <VolumeSlider disabled={!audioFeedbackEnabled} />
-      </SettingsGroup>
+    <div className="w-full max-w-4xl space-y-8 pb-12 animate-in fade-in duration-500">
+      <div className="animate-in slide-in-from-bottom-4 duration-500 delay-100 fill-mode-backwards">
+        <SettingsGroup title="Transcription">
+          <TranscriptionProviderSettings grouped />
+        </SettingsGroup>
+      </div>
+
+      <div className="animate-in slide-in-from-bottom-4 duration-500 delay-200 fill-mode-backwards">
+        <SettingsGroup title="General">
+          <HandyShortcut descriptionMode="inline" grouped={true} />
+          <LanguageSelector descriptionMode="inline" grouped={true} />
+          <PushToTalk descriptionMode="inline" grouped={true} />
+        </SettingsGroup>
+      </div>
+
+      <div className="animate-in slide-in-from-bottom-4 duration-500 delay-300 fill-mode-backwards">
+        <SettingsGroup title="Sound">
+          <MicrophoneSelector descriptionMode="inline" grouped={true} />
+          <AudioFeedback descriptionMode="inline" grouped={true} />
+          <OutputDeviceSelector
+            descriptionMode="inline"
+            grouped={true}
+            disabled={!audioFeedbackEnabled}
+          />
+          <VolumeSlider disabled={!audioFeedbackEnabled} />
+        </SettingsGroup>
+      </div>
     </div>
   );
 };

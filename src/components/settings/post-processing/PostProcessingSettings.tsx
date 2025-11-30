@@ -43,7 +43,7 @@ const PostProcessingSettingsApiComponent: React.FC = () => {
       <SettingContainer
         title="Provider"
         description="Select an OpenAI-compatible provider."
-        descriptionMode="tooltip"
+        descriptionMode="inline"
         layout="horizontal"
         grouped={true}
       >
@@ -59,7 +59,7 @@ const PostProcessingSettingsApiComponent: React.FC = () => {
       <SettingContainer
         title="Base URL"
         description="API base URL for the selected provider. Only the custom provider can be edited."
-        descriptionMode="tooltip"
+        descriptionMode="inline"
         layout="horizontal"
         grouped={true}
       >
@@ -80,7 +80,7 @@ const PostProcessingSettingsApiComponent: React.FC = () => {
       <SettingContainer
         title="API Key"
         description="API key for the selected provider."
-        descriptionMode="tooltip"
+        descriptionMode="inline"
         layout="horizontal"
         grouped={true}
       >
@@ -102,7 +102,7 @@ const PostProcessingSettingsApiComponent: React.FC = () => {
             ? "Provide the model identifier expected by your custom endpoint."
             : "Choose a model exposed by the selected provider."
         }
-        descriptionMode="tooltip"
+        descriptionMode="inline"
         layout="stacked"
         grouped={true}
       >
@@ -253,7 +253,7 @@ const PostProcessingSettingsPromptsComponent: React.FC = () => {
     <SettingContainer
       title="Selected Prompt"
       description="Select a template for refining transcriptions or create a new one. Use ${output} inside the prompt text to reference the captured transcript."
-      descriptionMode="tooltip"
+      descriptionMode="inline"
       layout="stacked"
       grouped={true}
     >
@@ -415,14 +415,18 @@ PostProcessingSettingsPrompts.displayName = "PostProcessingSettingsPrompts";
 
 export const PostProcessingSettings: React.FC = () => {
   return (
-    <div className="max-w-3xl w-full mx-auto space-y-6">
-      <SettingsGroup title="API (OpenAI Compatible)">
-        <PostProcessingSettingsApi />
-      </SettingsGroup>
+    <div className="w-full max-w-4xl space-y-8 pb-12 animate-in fade-in duration-500">
+      <div className="animate-in slide-in-from-bottom-4 duration-500 delay-100 fill-mode-backwards">
+        <SettingsGroup title="API (OpenAI Compatible)">
+          <PostProcessingSettingsApi />
+        </SettingsGroup>
+      </div>
 
-      <SettingsGroup title="Prompt">
-        <PostProcessingSettingsPrompts />
-      </SettingsGroup>
+      <div className="animate-in slide-in-from-bottom-4 duration-500 delay-200 fill-mode-backwards">
+        <SettingsGroup title="Prompt">
+          <PostProcessingSettingsPrompts />
+        </SettingsGroup>
+      </div>
     </div>
   );
 };

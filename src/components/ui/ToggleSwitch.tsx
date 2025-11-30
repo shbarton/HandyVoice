@@ -46,16 +46,16 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
         />
         <div
           className={`
-            relative w-11 h-6 rounded-full
-            bg-secondary border border-border/60
-            peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/20 peer-focus:ring-offset-1
-            peer-checked:bg-primary peer-checked:border-primary
+            relative w-[46px] h-[26px] rounded-full
+            bg-input transition-colors duration-300 ease-in-out
+            peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/20 peer-focus:ring-offset-2
+            peer-checked:bg-primary
             after:content-[''] after:absolute after:top-[3px] after:start-[3px]
-            after:bg-card after:rounded-full after:h-[18px] after:w-[18px]
-            after:shadow-[0_1px_3px_rgba(0,0,0,0.1)]
-            after:transition-all after:duration-200 after:ease-out
-            peer-checked:after:translate-x-5 peer-checked:after:bg-white
-            transition-all duration-200 ease-out
+            after:bg-white after:rounded-full after:h-[20px] after:w-[20px]
+            after:shadow-[0_2px_4px_rgba(0,0,0,0.15)]
+            after:transition-all after:duration-300 after:cubic-bezier(0.34,1.56,0.64,1)
+            peer-checked:after:translate-x-5
+            hover:after:scale-95
           `}
         />
       </label>

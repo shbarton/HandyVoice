@@ -32,56 +32,66 @@ export const AboutSettings: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl w-full mx-auto space-y-6">
-      <SettingsGroup title="About">
-        <SettingContainer
-          title="Version"
-          description="Current version of Handy"
-          grouped={true}
-        >
-          <span className="text-sm font-mono">v{version}</span>
-        </SettingContainer>
-
-        <AppDataDirectory descriptionMode="tooltip" grouped={true} />
-
-        <SettingContainer
-          title="Source Code"
-          description="View source code and contribute"
-          grouped={true}
-        >
-          <Button
-            variant="secondary"
-            size="md"
-            onClick={() => openUrl("https://github.com/cjpais/Handy")}
+    <div className="w-full max-w-4xl space-y-8 pb-12 animate-in fade-in duration-500">
+      <div className="animate-in slide-in-from-bottom-4 duration-500 delay-100 fill-mode-backwards">
+        <SettingsGroup title="About">
+          <SettingContainer
+            title="Version"
+            description="Current version of Handy"
+            grouped={true}
+            descriptionMode="inline"
           >
-            View on GitHub
-          </Button>
-        </SettingContainer>
+            <span className="text-sm font-mono bg-muted/50 px-2 py-1 rounded">
+              v{version}
+            </span>
+          </SettingContainer>
 
-        <SettingContainer
-          title="Support Development"
-          description="Help us continue building Handy"
-          grouped={true}
-        >
-          <Button variant="primary" size="md" onClick={handleDonateClick}>
-            Donate
-          </Button>
-        </SettingContainer>
-      </SettingsGroup>
+          <AppDataDirectory descriptionMode="inline" grouped={true} />
 
-      <SettingsGroup title="Acknowledgments">
-        <SettingContainer
-          title="Whisper.cpp"
-          description="High-performance inference of OpenAI's Whisper automatic speech recognition model"
-          grouped={true}
-          layout="stacked"
-        >
-          <div className="text-sm text-mid-gray">
-            Handy uses Whisper.cpp for fast, local speech-to-text processing.
-            Thanks to the amazing work by Georgi Gerganov and contributors.
-          </div>
-        </SettingContainer>
-      </SettingsGroup>
+          <SettingContainer
+            title="Source Code"
+            description="View source code and contribute"
+            grouped={true}
+            descriptionMode="inline"
+          >
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={() => openUrl("https://github.com/cjpais/Handy")}
+            >
+              View on GitHub
+            </Button>
+          </SettingContainer>
+
+          <SettingContainer
+            title="Support Development"
+            description="Help us continue building Handy"
+            grouped={true}
+            descriptionMode="inline"
+          >
+            <Button variant="primary" size="md" onClick={handleDonateClick}>
+              Donate
+            </Button>
+          </SettingContainer>
+        </SettingsGroup>
+      </div>
+
+      <div className="animate-in slide-in-from-bottom-4 duration-500 delay-200 fill-mode-backwards">
+        <SettingsGroup title="Acknowledgments">
+          <SettingContainer
+            title="Whisper.cpp"
+            description="High-performance inference of OpenAI's Whisper automatic speech recognition model"
+            grouped={true}
+            layout="stacked"
+            descriptionMode="inline"
+          >
+            <div className="text-sm text-muted-foreground leading-relaxed mt-2 p-3 bg-muted/20 rounded-lg border border-border/40">
+              Handy uses Whisper.cpp for fast, local speech-to-text processing.
+              Thanks to the amazing work by Georgi Gerganov and contributors.
+            </div>
+          </SettingContainer>
+        </SettingsGroup>
+      </div>
     </div>
   );
 };

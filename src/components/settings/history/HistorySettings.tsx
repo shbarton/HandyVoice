@@ -114,18 +114,19 @@ export const HistorySettings: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="max-w-3xl w-full mx-auto space-y-6">
-        <div className="space-y-2">
-          <div className="px-4 flex items-center justify-between">
+      <div className="w-full max-w-4xl space-y-6 animate-in fade-in duration-500">
+        <div className="space-y-4">
+          <div className="px-1 flex items-center justify-between">
             <div>
-              <h2 className="text-xs font-medium text-mid-gray uppercase tracking-wide">
+              <h2 className="text-xl font-serif text-foreground/90 flex items-center gap-2">
                 History
+                <span className="h-px bg-border w-12 opacity-60"></span>
               </h2>
             </div>
             <OpenRecordingsButton onClick={openRecordingsFolder} />
           </div>
-          <div className="bg-background border border-mid-gray/20 rounded-lg overflow-visible">
-            <div className="px-4 py-3 text-center text-text/60">
+          <div className="bg-card/50 backdrop-blur-sm border border-border rounded-2xl overflow-hidden p-8 flex items-center justify-center">
+            <div className="text-muted-foreground animate-pulse">
               Loading history...
             </div>
           </div>
@@ -136,20 +137,21 @@ export const HistorySettings: React.FC = () => {
 
   if (historyEntries.length === 0) {
     return (
-      <div className="max-w-3xl w-full mx-auto space-y-6">
-        <div className="space-y-2">
-          <div className="px-4 flex items-center justify-between">
+      <div className="w-full max-w-4xl space-y-6 animate-in fade-in duration-500">
+        <div className="space-y-4">
+          <div className="px-1 flex items-center justify-between">
             <div>
-              <h2 className="text-xs font-medium text-mid-gray uppercase tracking-wide">
+              <h2 className="text-xl font-serif text-foreground/90 flex items-center gap-2">
                 History
+                <span className="h-px bg-border w-12 opacity-60"></span>
               </h2>
             </div>
             <OpenRecordingsButton onClick={openRecordingsFolder} />
           </div>
-          <div className="bg-background border border-mid-gray/20 rounded-lg overflow-visible">
-            <div className="px-4 py-3 text-center text-text/60">
+          <div className="bg-card/50 backdrop-blur-sm border border-border rounded-2xl overflow-hidden p-12 text-center">
+            <p className="text-muted-foreground">
               No transcriptions yet. Start recording to build your history!
-            </div>
+            </p>
           </div>
         </div>
       </div>
@@ -157,27 +159,33 @@ export const HistorySettings: React.FC = () => {
   }
 
   return (
-    <div className="max-w-3xl w-full mx-auto space-y-6">
-      <div className="space-y-2">
-        <div className="px-4 flex items-center justify-between">
+    <div className="w-full max-w-4xl space-y-6 animate-in fade-in duration-500">
+      <div className="space-y-4">
+        <div className="px-1 flex items-center justify-between">
           <div>
-            <h2 className="text-xs font-medium text-mid-gray uppercase tracking-wide">
+            <h2 className="text-xl font-serif text-foreground/90 flex items-center gap-2">
               History
+              <span className="h-px bg-border w-12 opacity-60"></span>
             </h2>
           </div>
           <OpenRecordingsButton onClick={openRecordingsFolder} />
         </div>
-        <div className="bg-background border border-mid-gray/20 rounded-lg overflow-visible">
-          <div className="divide-y divide-mid-gray/20">
-            {historyEntries.map((entry) => (
-              <HistoryEntryComponent
+        <div className="bg-card/50 backdrop-blur-sm border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+          <div className="divide-y divide-border/50">
+            {historyEntries.map((entry, index) => (
+              <div
                 key={entry.id}
-                entry={entry}
-                onToggleSaved={() => toggleSaved(entry.id)}
-                onCopyText={() => copyToClipboard(entry.transcription_text)}
-                getAudioUrl={getAudioUrl}
-                deleteAudio={deleteAudioEntry}
-              />
+                className="animate-in slide-in-from-bottom-2 fill-mode-backwards"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                <HistoryEntryComponent
+                  entry={entry}
+                  onToggleSaved={() => toggleSaved(entry.id)}
+                  onCopyText={() => copyToClipboard(entry.transcription_text)}
+                  getAudioUrl={getAudioUrl}
+                  deleteAudio={deleteAudioEntry}
+                />
+              </div>
             ))}
           </div>
         </div>

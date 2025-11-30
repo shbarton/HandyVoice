@@ -99,7 +99,7 @@ export const TranscriptionProviderSettings: React.FC<
       <SettingContainer
         title="Transcription provider"
         description="Choose whether to run transcription locally or send audio to a remote provider."
-        descriptionMode="tooltip"
+        descriptionMode="inline"
         grouped={grouped}
       >
         <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
@@ -121,7 +121,7 @@ export const TranscriptionProviderSettings: React.FC<
       <SettingContainer
         title="API base URL"
         description="Remote API endpoint used for Deepgram/OpenAI requests (e.g. https://api.example.com)."
-        descriptionMode="tooltip"
+        descriptionMode="inline"
         grouped={grouped}
         layout="stacked"
         disabled={!useSecureStorage && !apiBaseUrlInput}
@@ -148,7 +148,7 @@ export const TranscriptionProviderSettings: React.FC<
       <SettingContainer
         title="Deepgram API key"
         description="Optional API key used for validation; only a preview is stored locally."
-        descriptionMode="tooltip"
+        descriptionMode="inline"
         grouped={grouped}
         layout="stacked"
         disabled={provider !== "deepgram"}
@@ -160,7 +160,9 @@ export const TranscriptionProviderSettings: React.FC<
             placeholder="dg_..."
             value={apiKeyInput}
             onChange={(e) => setApiKeyInput(e.target.value)}
-            disabled={provider !== "deepgram" || isUpdating("deepgram_api_key_preview")}
+            disabled={
+              provider !== "deepgram" || isUpdating("deepgram_api_key_preview")
+            }
           />
           <Button
             size="sm"
@@ -180,16 +182,16 @@ export const TranscriptionProviderSettings: React.FC<
             ? settings.deepgram_api_key_preview
             : "Not set"}
         </p>
-      {validationMessage && (
-        <p
-          className={`text-xs mt-1 ${
-            validationState === "error" ? "text-red-500" : "text-emerald-500"
-          }`}
-        >
-          {validationMessage}
-        </p>
-      )}
-    </SettingContainer>
+        {validationMessage && (
+          <p
+            className={`text-xs mt-1 ${
+              validationState === "error" ? "text-red-500" : "text-emerald-500"
+            }`}
+          >
+            {validationMessage}
+          </p>
+        )}
+      </SettingContainer>
 
       <SettingContainer
         title="Key storage"
@@ -205,7 +207,9 @@ export const TranscriptionProviderSettings: React.FC<
               checked={useSecureStorage}
               onChange={() => setSecureKeyStorage(true)}
             />
-            <span className="text-sm">Secure (Keychain/Credential Manager)</span>
+            <span className="text-sm">
+              Secure (Keychain/Credential Manager)
+            </span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer select-none">
             <input
@@ -221,8 +225,9 @@ export const TranscriptionProviderSettings: React.FC<
           </label>
         </div>
         <p className="text-xs text-mid-gray mt-1">
-          On macOS dev builds you may see a prompt once per launch. Signed releases
-          typically prompt only on first use. Switch to local storage to avoid prompts (less secure).
+          On macOS dev builds you may see a prompt once per launch. Signed
+          releases typically prompt only on first use. Switch to local storage
+          to avoid prompts (less secure).
         </p>
       </SettingContainer>
 
