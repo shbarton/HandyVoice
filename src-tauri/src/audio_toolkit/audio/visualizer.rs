@@ -1,10 +1,10 @@
 use rustfft::{num_complex::Complex32, Fft, FftPlanner};
 use std::sync::Arc;
 
-const DB_MIN: f32 = -55.0;
-const DB_MAX: f32 = -8.0;
-const GAIN: f32 = 1.3;
-const CURVE_POWER: f32 = 0.7;
+const DB_MIN: f32 = -65.0;  // More sensitive to quiet sounds
+const DB_MAX: f32 = -15.0;  // Compress dynamic range
+const GAIN: f32 = 2.0;      // Higher gain for visibility
+const CURVE_POWER: f32 = 0.5; // More aggressive curve for quiet sounds
 
 pub struct AudioVisualiser {
     fft: Arc<dyn Fft<f32>>,

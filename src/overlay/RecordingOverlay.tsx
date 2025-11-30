@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { CancelIcon, StopIcon } from "../components/icons";
 import "./RecordingOverlay.css";
 
@@ -9,10 +9,22 @@ type OverlayState = "recording" | "transcribing" | "error";
 const RecordingOverlay: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [state, setState] = useState<OverlayState>("recording");
-  const [levels, setLevels] = useState<number[]>(Array(16).fill(0));
-  const smoothedLevelsRef = useRef<number[]>(Array(16).fill(0));
+  const [levels, setLevels] = useState<number[]>(Array(12).fill(0));
+  const smoothedLevelsRef = useRef<number[]>(Array(12).fill(0));
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const errorTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // Mirror levels so center bars are loudest (like ElevenLabs)
+  // Left side: reversed (edge to center), Right side: normal (center to edge)
+  const mirroredLevels = useMemo(() => {
+    const trimmed = levels.slice(0, 12);
+    if (!trimmed.length) {
+      return Array(24).fill(0);
+    }
+    // Reverse for left half (so highest values are in center)
+    // then normal for right half (highest values also in center)
+    return [...trimmed.slice().reverse(), ...trimmed];
+  }, [levels]);
+  const halfCount = mirroredLevels.length / 2;
 
   useEffect(() => {
     const setupEventListeners = async () => {
@@ -34,14 +46,16 @@ const RecordingOverlay: React.FC = () => {
       const unlistenLevel = await listen<number[]>("mic-level", (event) => {
         const newLevels = event.payload as number[];
 
-        // Apply smoothing to reduce jitter
+        // Light smoothing - more responsive to input
         const smoothed = smoothedLevelsRef.current.map((prev, i) => {
           const target = newLevels[i] || 0;
-          return prev * 0.7 + target * 0.3; // Smooth transition
+          // Faster attack (0.5), slower decay for natural feel
+          const factor = target > prev ? 0.5 : 0.35;
+          return prev * (1 - factor) + target * factor;
         });
 
         smoothedLevelsRef.current = smoothed;
-        setLevels(smoothed.slice(0, 9));
+        setLevels(smoothed.slice(0, 12));
       });
 
       // Listen for transcription errors to show inline toast
@@ -88,25 +102,42 @@ const RecordingOverlay: React.FC = () => {
               invoke("cancel_operation");
             }}
           >
-            <CancelIcon width={10} height={10} />
+            <CancelIcon width={14} height={14} />
           </div>
         )}
       </div>
 
       <div className="overlay-middle">
         {state === "recording" && !errorMessage && (
-          <div className="bars-container">
-            {levels.map((v, i) => (
-              <div
-                key={i}
-                className="bar"
-                style={{
-                  height: `${Math.min(20, 4 + Math.pow(v, 0.7) * 16)}px`, // Cap at 20px max height
-                  transition: "height 60ms ease-out, opacity 120ms ease-out",
-                  opacity: Math.max(0.2, v * 1.7), // Minimum opacity for visibility
-                }}
-              />
-            ))}
+          <div className="waveform-shell">
+            <div className="waveform-bars">
+              {mirroredLevels.map((value, index) => {
+                // Distance from center (0 at center, 1 at edges)
+                const distanceFromCenter =
+                  Math.abs(index - halfCount + 0.5) / halfCount;
+                // Slight center boost, edges still visible
+                const centerWeight = 1 - distanceFromCenter * 0.15;
+
+                // High sensitivity - amplify quiet sounds significantly
+                // Use sqrt for more aggressive amplification of low values
+                const boosted = Math.min(1, Math.sqrt(value) * 2.5);
+                const normalized = Math.min(1, Math.pow(boosted, 0.5));
+                // Scale from 0.1 (min) to 1.0 (max)
+                const scale = 0.1 + normalized * 0.9 * centerWeight;
+                const opacity = 0.3 + normalized * 0.7;
+
+                return (
+                  <span
+                    key={`waveform-bar-${index}`}
+                    className="waveform-bar"
+                    style={{
+                      opacity,
+                      transform: `scaleY(${scale})`,
+                    }}
+                  />
+                );
+              })}
+            </div>
           </div>
         )}
         {state === "transcribing" && !errorMessage && (
@@ -127,7 +158,7 @@ const RecordingOverlay: React.FC = () => {
               invoke("finish_operation");
             }}
           >
-            <StopIcon width={10} height={10} />
+            <StopIcon width={14} height={14} />
           </div>
         )}
       </div>

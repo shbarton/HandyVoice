@@ -1,10 +1,10 @@
 .recording-overlay {
-  height: 48px;
+  height: 56px;
   min-width: 180px;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  padding: 6px 8px;
+  padding: 8px 10px;
   background: #000000;
   border-radius: 9999px;
   opacity: 0;
@@ -21,7 +21,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 12px;
+  padding: 0 4px;
+  overflow: hidden;
+  min-width: 0;
 }
 
 .overlay-right {
@@ -30,23 +32,39 @@
   justify-content: flex-end;
 }
 
-.bars-container {
+.waveform-shell {
+  position: relative;
+  width: 100%;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 3px;
-  height: 24px;
-  overflow: hidden;
+  flex-shrink: 1;
 }
 
-.bar {
-  width: 4px;
+.waveform-bars {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.waveform-bar {
+  width: 2.5px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 999px;
   background: #ffffff;
-  max-height: 20px;
-  border-radius: 2px;
-  transition: height 80ms linear;
-  min-height: 4px;
-  opacity: 0.8;
+  transform-origin: center;
+  opacity: 0.35;
+  transform: scaleY(0.12);
+  transition:
+    transform 50ms linear,
+    opacity 60ms linear;
 }
 
 .recording-overlay.fade-in {
