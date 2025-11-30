@@ -118,7 +118,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         <div
           className={`
             absolute top-full left-0 mt-1.5 min-w-full w-max
-            bg-popover border border-border rounded-xl
+            bg-white border border-border rounded-xl
             shadow-[0_10px_38px_-10px_rgba(22,23,24,0.35),0_10px_20px_-15px_rgba(22,23,24,0.2)]
             z-[100] max-h-64 overflow-hidden
             origin-top
@@ -130,7 +130,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
           `}
           role="listbox"
         >
-          <div className="p-1.5 overflow-y-auto max-h-[calc(16rem-0.75rem)] bg-popover">
+          <div className="p-1.5 overflow-y-auto max-h-[calc(16rem-0.75rem)] bg-white">
             {options.length === 0 ? (
               <div className="px-3 py-2.5 text-sm text-muted-foreground text-center italic">
                 No options available

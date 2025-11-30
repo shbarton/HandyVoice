@@ -156,7 +156,7 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
               </svg>
               {showTooltip && (
                 <div
-                  className={`absolute ${tooltipPosition === "top" ? "bottom-full mb-2" : "top-full mt-2"} left-1/2 -translate-x-1/2 px-3 py-2 bg-popover border border-border rounded-lg shadow-[0_10px_38px_-10px_rgba(22,23,24,0.35),0_10px_20px_-15px_rgba(22,23,24,0.2)] z-[100] min-w-[240px] max-w-xs animate-in fade-in zoom-in-95 duration-200`}
+                  className={`absolute ${tooltipPosition === "top" ? "bottom-full mb-2" : "top-full mt-2"} left-1/2 -translate-x-1/2 px-3 py-2 bg-white border border-border rounded-lg shadow-[0_10px_38px_-10px_rgba(22,23,24,0.35),0_10px_20px_-15px_rgba(22,23,24,0.2)] z-[100] min-w-[240px] max-w-xs animate-in fade-in zoom-in-95 duration-200`}
                 >
                   <p className="text-sm text-popover-foreground leading-relaxed">
                     {description}
