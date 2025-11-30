@@ -346,6 +346,7 @@ pub fn run() {
             shortcut::change_mute_while_recording_setting,
             trigger_update_check,
             commands::cancel_operation,
+            commands::finish_operation,
             commands::get_app_dir_path,
             commands::get_log_dir_path,
             commands::set_log_level,

@@ -4,9 +4,20 @@ pub mod models;
 pub mod transcription;
 
 use crate::{settings, utils::cancel_current_operation};
+use std::sync::Arc;
 use tauri::{AppHandle, Manager};
 use tauri_plugin_log::LogLevel;
 use tauri_plugin_opener::OpenerExt;
+
+#[tauri::command]
+pub fn finish_operation(app: AppHandle) {
+    let rm = app.state::<Arc<crate::managers::audio::AudioRecordingManager>>();
+    if let Some(binding_id) = rm.get_active_binding() {
+        if let Some(action) = crate::actions::ACTION_MAP.get("transcribe") {
+            action.stop(&app, &binding_id, "");
+        }
+    }
+}
 
 #[tauri::command]
 pub fn cancel_operation(app: AppHandle) {

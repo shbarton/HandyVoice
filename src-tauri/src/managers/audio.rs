@@ -181,6 +181,13 @@ impl AudioRecordingManager {
         Ok(manager)
     }
 
+    pub fn get_active_binding(&self) -> Option<String> {
+        match &*self.state.lock().unwrap() {
+            RecordingState::Recording { binding_id } => Some(binding_id.clone()),
+            _ => None,
+        }
+    }
+
     /* ---------- helper methods --------------------------------------------- */
 
     fn get_effective_microphone_device(&self, settings: &AppSettings) -> Option<cpal::Device> {

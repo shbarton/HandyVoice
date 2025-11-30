@@ -1,20 +1,18 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  MicrophoneIcon,
-  TranscriptionIcon,
-  CancelIcon,
-} from "../components/icons";
+import { CancelIcon, StopIcon } from "../components/icons";
 import "./RecordingOverlay.css";
 
-type OverlayState = "recording" | "transcribing";
+type OverlayState = "recording" | "transcribing" | "error";
 
 const RecordingOverlay: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [state, setState] = useState<OverlayState>("recording");
   const [levels, setLevels] = useState<number[]>(Array(16).fill(0));
   const smoothedLevelsRef = useRef<number[]>(Array(16).fill(0));
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const errorTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const setupEventListeners = async () => {
@@ -23,11 +21,13 @@ const RecordingOverlay: React.FC = () => {
         const overlayState = event.payload as OverlayState;
         setState(overlayState);
         setIsVisible(true);
+        setErrorMessage(null);
       });
 
       // Listen for hide-overlay event from Rust
       const unlistenHide = await listen("hide-overlay", () => {
         setIsVisible(false);
+        setErrorMessage(null);
       });
 
       // Listen for mic-level updates
@@ -44,31 +44,57 @@ const RecordingOverlay: React.FC = () => {
         setLevels(smoothed.slice(0, 9));
       });
 
+      // Listen for transcription errors to show inline toast
+      const unlistenError = await listen<string>(
+        "transcription-error",
+        (event) => {
+          const message = event.payload;
+          setErrorMessage(message);
+          setState("error");
+          setIsVisible(true);
+
+          if (errorTimeoutRef.current) {
+            clearTimeout(errorTimeoutRef.current);
+          }
+          errorTimeoutRef.current = setTimeout(() => {
+            setIsVisible(false);
+            setErrorMessage(null);
+          }, 3200);
+        },
+      );
+
       // Cleanup function
       return () => {
         unlistenShow();
         unlistenHide();
         unlistenLevel();
+        unlistenError();
+        if (errorTimeoutRef.current) {
+          clearTimeout(errorTimeoutRef.current);
+        }
       };
     };
 
     setupEventListeners();
   }, []);
 
-  const getIcon = () => {
-    if (state === "recording") {
-      return <MicrophoneIcon />;
-    } else {
-      return <TranscriptionIcon />;
-    }
-  };
-
   return (
     <div className={`recording-overlay ${isVisible ? "fade-in" : ""}`}>
-      <div className="overlay-left">{getIcon()}</div>
+      <div className="overlay-left">
+        {state === "recording" && (
+          <div
+            className="cancel-button"
+            onClick={() => {
+              invoke("cancel_operation");
+            }}
+          >
+            <CancelIcon width={10} height={10} />
+          </div>
+        )}
+      </div>
 
       <div className="overlay-middle">
-        {state === "recording" && (
+        {state === "recording" && !errorMessage && (
           <div className="bars-container">
             {levels.map((v, i) => (
               <div
@@ -83,20 +109,25 @@ const RecordingOverlay: React.FC = () => {
             ))}
           </div>
         )}
-        {state === "transcribing" && (
+        {state === "transcribing" && !errorMessage && (
           <div className="transcribing-text">Transcribing...</div>
+        )}
+        {state === "error" && errorMessage && (
+          <div className="error-text" title={errorMessage}>
+            {errorMessage}
+          </div>
         )}
       </div>
 
       <div className="overlay-right">
         {state === "recording" && (
           <div
-            className="cancel-button"
+            className="stop-button"
             onClick={() => {
-              invoke("cancel_operation");
+              invoke("finish_operation");
             }}
           >
-            <CancelIcon />
+            <StopIcon width={10} height={10} />
           </div>
         )}
       </div>

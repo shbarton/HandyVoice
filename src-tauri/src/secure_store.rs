@@ -50,16 +50,3 @@ pub fn fetch_api_key(provider: &str) -> Option<String> {
         }
     }
 }
-
-pub fn delete_api_key(provider: &str) -> Result<(), String> {
-    let entry = Entry::new(SERVICE_NAME, provider)
-        .map_err(|e| format!("Failed to create keyring entry: {}", e))?;
-    entry
-        .delete_password()
-        .map_err(|e| format!("Failed to delete API key: {}", e))?;
-    if let Ok(mut cache) = KEY_CACHE.lock() {
-        cache.remove(provider);
-    }
-    debug!("Deleted API key from keyring for provider '{}'", provider);
-    Ok(())
-}

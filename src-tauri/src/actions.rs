@@ -22,6 +22,7 @@ use std::io::Cursor;
 use std::sync::Arc;
 use std::time::Instant;
 use tauri::AppHandle;
+use tauri::Emitter;
 use tauri::Manager;
 use reqwest::StatusCode;
 
@@ -247,8 +248,6 @@ struct RemoteTranscriptionResponse {
     text: Option<String>,
     success: Option<bool>,
     error: Option<String>,
-    #[serde(rename = "requiresUpgrade")]
-    requires_upgrade: Option<bool>,
 }
 
 #[derive(Serialize)]
@@ -305,6 +304,12 @@ fn encode_audio_to_wav_bytes(samples: &[f32]) -> Result<Vec<u8>, String> {
     }
 
     Ok(cursor.into_inner())
+}
+
+fn emit_overlay_error(app: &AppHandle, message: &str) {
+    if let Some(overlay) = app.get_webview_window("recording_overlay") {
+        let _ = overlay.emit("transcription-error", message);
+    }
 }
 
 async fn transcribe_remote(settings: &AppSettings, samples: &[f32]) -> Result<String, String> {
@@ -758,12 +763,14 @@ impl ShortcutAction for TranscribeAction {
                     }
                     Err(err) => {
                         warn!("Transcription failed via {:?}: {}", provider, err);
+                        emit_overlay_error(&ah, &err);
                         utils::hide_recording_overlay(&ah);
                         change_tray_icon(&ah, TrayIconState::Idle);
                     }
                 }
             } else {
                 debug!("No samples retrieved from recording stop");
+                emit_overlay_error(&ah, "No audio captured");
                 utils::hide_recording_overlay(&ah);
                 change_tray_icon(&ah, TrayIconState::Idle);
             }

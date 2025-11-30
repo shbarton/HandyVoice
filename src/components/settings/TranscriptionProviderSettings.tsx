@@ -24,6 +24,7 @@ export const TranscriptionProviderSettings: React.FC<
   const usageMode = settings?.usage_mode ?? "own_keys";
   const apiBaseUrl = settings?.api_base_url ?? "";
   const useSecureStorage = settings?.use_secure_key_storage ?? true;
+  const deepgramModel = settings?.deepgram_model ?? "nova-3";
   const [apiBaseUrlInput, setApiBaseUrlInput] = useState(apiBaseUrl || "");
   const [apiKeyInput, setApiKeyInput] = useState("");
   const [validationState, setValidationState] = useState<
@@ -79,6 +80,13 @@ export const TranscriptionProviderSettings: React.FC<
     { value: "local", label: "Local (Handy built-in)" },
     { value: "deepgram", label: "Deepgram (cloud)" },
     { value: "openai", label: "OpenAI (cloud)" },
+  ];
+
+  const deepgramModelOptions = [
+    { value: "nova-3", label: "Nova 3 (default)" },
+    { value: "nova-2", label: "Nova 2" },
+    { value: "general", label: "General (legacy)" },
+    { value: "general-enhanced", label: "General Enhanced (legacy)" },
   ];
 
   const usageModeOptions = [
@@ -212,7 +220,26 @@ export const TranscriptionProviderSettings: React.FC<
             </span>
           </label>
         </div>
+        <p className="text-xs text-mid-gray mt-1">
+          On macOS dev builds you may see a prompt once per launch. Signed releases
+          typically prompt only on first use. Switch to local storage to avoid prompts (less secure).
+        </p>
       </SettingContainer>
+
+      {provider === "deepgram" && (
+        <SettingContainer
+          title="Deepgram model"
+          description="Choose the model for cloud transcription."
+          grouped={grouped}
+        >
+          <Dropdown
+            options={deepgramModelOptions}
+            selectedValue={deepgramModel}
+            onSelect={(value) => updateSetting("deepgram_model", value as any)}
+            disabled={isUpdating("deepgram_model")}
+          />
+        </SettingContainer>
+      )}
     </>
   );
 };

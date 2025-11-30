@@ -1,12 +1,12 @@
 .recording-overlay {
-  height: 36px;
-  width: 172px;
+  height: 48px;
+  min-width: 180px;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  padding: 6px;
-  background: #000000cc;
-  border-radius: 18px;
+  padding: 6px 8px;
+  background: #000000;
+  border-radius: 9999px;
   opacity: 0;
   transition: opacity 300ms ease-out;
   box-sizing: border-box;
@@ -21,6 +21,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 12px;
 }
 
 .overlay-right {
@@ -31,21 +32,21 @@
 
 .bars-container {
   display: flex;
-  align-items: end;
+  align-items: center;
   justify-content: center;
   gap: 3px;
-  padding-bottom: 0px;
   height: 24px;
   overflow: hidden;
 }
 
 .bar {
-  width: 6px;
-  background: #ffe5ee;
+  width: 4px;
+  background: #ffffff;
   max-height: 20px;
   border-radius: 2px;
   transition: height 80ms linear;
   min-height: 4px;
+  opacity: 0.8;
 }
 
 .recording-overlay.fade-in {
@@ -54,10 +55,21 @@
 
 .transcribing-text {
   color: white;
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 500;
   font-family:
     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   animation: transcribing-pulse 1.5s infinite ease-in-out;
+}
+
+.error-text {
+  color: #fca5a5;
+  font-size: 12px;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  text-align: center;
+  max-width: 200px;
+  line-height: 1.2;
 }
 
 @keyframes transcribing-pulse {
@@ -71,10 +83,10 @@
 }
 
 .cancel-button {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: transparent;
+  background: #64748b;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -83,13 +95,39 @@
     background-color 150ms ease-out,
     transform 100ms ease-out;
   flex-shrink: 0;
+  color: white;
 }
 
 .cancel-button:hover {
-  background: #faa2ca33;
+  background: #475569;
   transform: scale(1.05);
 }
 
 .cancel-button:active {
+  transform: scale(0.95);
+}
+
+.stop-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease-out,
+    transform 100ms ease-out;
+  flex-shrink: 0;
+  color: white;
+}
+
+.stop-button:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+.stop-button:active {
   transform: scale(0.95);
 }
